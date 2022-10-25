@@ -46,7 +46,14 @@ class _ToAddUpdatePageState extends State<ToAddUpdatePage> {
               child: ElevatedButton(
                 child: const Text("Save"),
                 onPressed: () async{
-
+                  if (!_isUpdate) {
+                    final todo = Todo(
+                      title: _titleController.text,
+                      detail: _detailController.text
+                    );
+                    Provider.of<DbProvider>(context,listen:false).addTodo(todo);
+                  }
+                  Navigator.pop(context);
                 },
               )
             )

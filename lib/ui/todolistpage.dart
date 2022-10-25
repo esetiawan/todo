@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled/provider/dbprovider.dart';
+import 'package:untitled/ui/todoadd_updatepage.dart';
 
 class ToDoListPage extends StatelessWidget {
   const ToDoListPage({super.key});
@@ -40,7 +41,9 @@ class ToDoListPage extends StatelessWidget {
         }
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {  },
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>const ToAddUpdatePage()));
+        },
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
