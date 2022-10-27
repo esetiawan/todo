@@ -24,14 +24,21 @@ class ToDoListPage extends StatelessWidget {
                   key: Key(todo.id.toString()),
                   background: Container(color: Colors.red),
                   onDismissed: (direction){
-
+                    provider.deleteTodo(todo.id!);
                   },
                   child: Card(
                     child: ListTile(
                       title: Text(todo.title),
                       subtitle: Text(todo.detail),
+                      trailing: ElevatedButton(onPressed: (){
+                        //provider.deleteTodo(todo.id!);
+                      }, child: Text('Done'),),
                       onTap: () async{
-
+                        final navigator = Navigator.of(context);
+                        final selectedTodo = await provider.getTodoById(todo.id!);
+                        navigator.push(MaterialPageRoute(builder: (context){
+                          return ToAddUpdatePage(todo: selectedTodo);
+                        }));
                       },
                     )
                   )

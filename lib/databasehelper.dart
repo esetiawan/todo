@@ -36,4 +36,19 @@ class DatabaseHelper {
     List<Map<String,dynamic>> results = await db.query(_tableName);
     return results.map((res)=> Todo.fromMap(res)).toList();
   }
+  Future<Todo> getTodoById(int id) async{
+    final Database db = await database;
+    List<Map<String,dynamic>> results = await db.query(_tableName,
+        where:"id=?", whereArgs: [id]);
+    return results.map((res)=>Todo.fromMap(res)).first;
+  }
+  Future<void> updateTodo(Todo todo) async{
+    final Database db = await database;
+    await db.update(_tableName, todo.toMap(),where:'id=?',
+      whereArgs:[todo.id]);
+  }
+  Future<void> deleteTodo(int id) async{
+    final Database db = await database;
+    await db.delete(_tableName, where:'id=?', whereArgs:[id]);
+  }
 }
