@@ -23,6 +23,9 @@ class DbProvider extends ChangeNotifier{
   Future<Todo> getTodoById(int id) async{
     return await _dbHelper.getTodoById(id);
   }
+  Future<Todo> getOldestTodo() async{
+    return await _dbHelper.getOldestTodo();
+  }
   Future<void> updateTodo(Todo todo) async{
     await _dbHelper.updateTodo(todo);
     _getAllTodos();
