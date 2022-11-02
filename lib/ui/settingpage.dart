@@ -9,18 +9,25 @@ class SettingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<PreferencesProvider>(
       builder: (context,provider,child) {
-        return ListView(
-            children: [
-              Material(
-                child: ListTile(
-                    title: const Text('Enable Notifications'),
-                    trailing: Switch.adaptive(value: provider.isNotifEnabled,
-                        onChanged: (value) {
-                          provider.enableNotif(value);
-                        })
+        return Scaffold(
+          appBar: AppBar(
+            // Here we take the value from the MyHomePage object that was created by
+            // the App.build method, and use it to set our appbar title.
+            title: const Text("Setting"),
+          ),
+          body: ListView(
+              children: [
+                Material(
+                  child: ListTile(
+                      title: const Text('Enable Notifications'),
+                      trailing: Switch.adaptive(value: provider.isNotifEnabled,
+                          onChanged: (value) {
+                            provider.enableNotif(value);
+                          })
+                  ),
                 ),
-              ),
-            ]
+              ]
+          ),
         );
       }
       );
