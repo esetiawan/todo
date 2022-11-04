@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 
-import 'data/model/todo.dart';
+import '../data/model/todo.dart';
 
 class DatabaseHelper {
   static late Database _database;

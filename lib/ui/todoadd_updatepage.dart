@@ -5,6 +5,7 @@ import 'package:untitled/provider/dbprovider.dart';
 import '../data/model/todo.dart';
 
 class ToAddUpdatePage extends StatefulWidget {
+  static const routeName='/toadd_update';
   final Todo? todo;
   const ToAddUpdatePage({super.key, this.todo});
   @override

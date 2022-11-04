@@ -3,7 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:untitled/provider/dbprovider.dart';
 import 'package:untitled/ui/todoadd_updatepage.dart';
 
+import '../common/navigation.dart';
+
 class ToDoListPage extends StatelessWidget {
+  static const routeName='/todo_list';
   const ToDoListPage({super.key});
   @override
   Widget build(BuildContext context) {
@@ -34,11 +37,12 @@ class ToDoListPage extends StatelessWidget {
                         //provider.deleteTodo(todo.id!);
                       }, child: Text('Done'),),
                       onTap: () async{
-                        final navigator = Navigator.of(context);
+                        //final navigator = Navigator.of(context);
                         final selectedTodo = await provider.getTodoById(todo.id!);
-                        navigator.push(MaterialPageRoute(builder: (context){
+                        /*navigator.push(MaterialPageRoute(builder: (context){
                           return ToAddUpdatePage(todo: selectedTodo);
-                        }));
+                        })); */
+                        Navigation.intentWithData(ToAddUpdatePage.routeName,selectedTodo);
                       },
                     )
                   )
