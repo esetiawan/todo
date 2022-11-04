@@ -12,6 +12,14 @@ class SchedulingProvider extends ChangeNotifier{
     if (_isScheduled) {
       print('Scheduling todo activated');
       notifyListeners();
+      return await AndroidAlarmManager.oneShot(
+          const Duration(seconds: 5),
+          1,
+          BackgroundService.callback,
+          exact: true,
+          wakeup:true
+      );
+      /*
       return await AndroidAlarmManager.periodic(
         const Duration(hours: 24),
         1,
@@ -19,7 +27,7 @@ class SchedulingProvider extends ChangeNotifier{
         startAt: DateTimeHelper.format(),
         exact: true,
         wakeup:true
-      );
+      ); */
     }
     else {
       print('Scheduling Todo Cancelled');
