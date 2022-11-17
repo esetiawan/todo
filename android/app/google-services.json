@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "965800351312",
+    "project_id": "todo-5f8ca",
+    "storage_bucket": "todo-5f8ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965800351312:android:9abd8a157beacc5e3d2355",
+        "android_client_info": {
+          "package_name": "com.example.untitled"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "965800351312-tj1gi70gdb6s4i2f73t51v1m5juujt39.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAs3BbTPGnIQvPeAs8F5Rk6hF6Lx8UpqGg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "965800351312-tj1gi70gdb6s4i2f73t51v1m5juujt39.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "965800351312-flb0q85kls51cf59lf2t4m6fq7m3rpff.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.untitled"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
