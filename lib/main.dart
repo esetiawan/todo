@@ -22,12 +22,16 @@ import 'package:untitled/utils/notificationhelper.dart';
 import 'package:untitled/widgets/flagiconwidget.dart';
 import 'data/model/todo.dart';
 import 'data/preferences/preferences_helper.dart';
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   final NotificationHelper _notificationHelper = NotificationHelper();
   final BackgroundService _service = BackgroundService();
   _service.initializeIsolate();
@@ -44,92 +48,110 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final NotificationHelper _notificationHelper=NotificationHelper();
+  final NotificationHelper _notificationHelper = NotificationHelper();
 
+  Future<void> getFCMToken() async {
+    final token = await FirebaseMessaging.instance.getToken();
+    print("FCM TOKEN = $token");
+  }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(providers: [
-        ChangeNotifierProvider(
-          create: (context)=>DbProvider()),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => DbProvider()),
         ChangeNotifierProvider<PreferencesProvider>(
-          create: (context)=>PreferencesProvider(preferencesHelper:
-              PreferencesHelper(sharedPreferences: SharedPreferences.getInstance()))),
-        ChangeNotifierProvider(
-          create: (context)=>SchedulingProvider()),
-        ChangeNotifierProvider(
-          create: (context)=>LocalizationsProvider()),
-    ],
-      child:
-
-        Builder(
-          builder: (context) {
-            final provider = Provider.of<LocalizationsProvider>(context);
-            return MaterialApp(
-              locale: provider.locale,
-              title: AppLocalizations.of(context)?.titleAppBar ?? 'Text',
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              navigatorKey: navigatorKey,
-
-              theme: ThemeData(
-                primarySwatch: Colors.blue,
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-              ),
-              home: Scaffold(
-                body: Center(
-                        //child:const ToDoListPage()
-                        child:const LoginPage()
-                      ),
-                  bottomNavigationBar:Builder(builder:(context){
-                    return BottomNavigationBar(
-                        items: <BottomNavigationBarItem>[
-                          BottomNavigationBarItem(icon: Icon(Icons.home),label:'Home'),
-                          BottomNavigationBarItem(icon: Icon(Icons.done),label:'Done'),
-                          BottomNavigationBarItem(icon: Icon(Icons.settings),label:'Settings'),
-                        ],
-                        currentIndex: 0,
-                        onTap: (index) async {
-                          switch(index) {
-                            case 0:
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                                return ToDoListPage();
-                              }));
-                              break;
-                            case 1:
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                                return DoneTodoPage();
-                              }));
-                              //coba notif yang standar jalan
-                              /*final NotificationHelper notificationHelper=NotificationHelper();
+            create: (context) => PreferencesProvider(
+                preferencesHelper: PreferencesHelper(
+                    sharedPreferences: SharedPreferences.getInstance()))),
+        ChangeNotifierProvider(create: (context) => SchedulingProvider()),
+        ChangeNotifierProvider(create: (context) => LocalizationsProvider()),
+      ],
+      child: Builder(builder: (context) {
+        final provider = Provider.of<LocalizationsProvider>(context);
+        return MaterialApp(
+          locale: provider.locale,
+          title: AppLocalizations.of(context)?.titleAppBar ?? 'Text',
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          navigatorKey: navigatorKey,
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          home: Scaffold(
+              body: Center(
+                  //child:const ToDoListPage()
+                  child: const LoginPage()),
+              bottomNavigationBar: Builder(builder: (context) {
+                return BottomNavigationBar(
+                    items: <BottomNavigationBarItem>[
+                      BottomNavigationBarItem(
+                          icon: Icon(Icons.home), label: 'Home'),
+                      BottomNavigationBarItem(
+                          icon: Icon(Icons.done), label: 'Done'),
+                      BottomNavigationBarItem(
+                          icon: Icon(Icons.settings), label: 'Settings'),
+                    ],
+                    currentIndex: 0,
+                    onTap: (index) async {
+                      switch (index) {
+                        case 0:
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return ToDoListPage();
+                          }));
+                          break;
+                        case 1:
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return DoneTodoPage();
+                          }));
+                          //coba notif yang standar jalan
+                          /*final NotificationHelper notificationHelper=NotificationHelper();
                               await notificationHelper.showNotification(
                                 flutterLocalNotificationsPlugin,
                                 Todo( id: 7,
                                     title:"Tugas Nomer 7",
                                     detail:"Ini Tugas belajar Flutter")
                               ); */
-                              break;
-                            case 2:
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context){
-                                return SettingPage();
-                              }));
-                              break;
-                          }
-                        }
-                    );
-                  })
-                ),
-              );
-          }
-        ),
-      );
+                          break;
+                        case 2:
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return SettingPage();
+                          }));
+                          break;
+                      }
+                    });
+              })),
+        );
+      }),
+    );
   }
 
   @override
   void initState() {
     super.initState();
-    _notificationHelper.configureSelectNotificationSubject(ToAddUpdatePage.routeName);
+    _notificationHelper
+        .configureSelectNotificationSubject(ToAddUpdatePage.routeName);
+
+    // Run code required to handle interacted messages in an async function
+    // as initState() must not be async
+    getFCMToken();
+
+    FirebaseMessaging.onMessage.listen(showFlutterNotification);
+
+    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    //   print('A new onMessageOpenedApp event was published!');
+    //   print(message);
+    //   // Navigator.pushNamed(
+    //   //   context,
+    //   //   '/message',
+    //   //   arguments: MessageArguments(message, true),
+    //   // );
+    // });
   }
 
   @override
@@ -139,4 +161,16 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+//   // await setupFlutterNotifications();
+//   // showFlutterNotification(message);
+//   // If you're going to use other Firebase services in the background, such as Firestore,
+//   // make sure you call `initializeApp` before using other Firebase services.
+//   print('Handling a background message ${message.messageId}');
+// }
 
+void showFlutterNotification(RemoteMessage message) {
+  print("MESSAGE DATANG $message");
+  print("MESSAGE DATANG Title =  ${message.notification?.title ?? ""}");
+}
