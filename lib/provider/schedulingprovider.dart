@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:untitled/utils/backgroundservice.dart';
@@ -8,13 +10,13 @@ class SchedulingProvider extends ChangeNotifier{
 
   bool get isScheduled => _isScheduled;
   Future<bool> scheduledTodo(bool value) async {
-    _isScheduled=false;
+    _isScheduled=value;
     if (_isScheduled) {
       print('Scheduling todo activated');
       notifyListeners();
       return await AndroidAlarmManager.oneShot(
           const Duration(seconds: 5),
-          1,
+          Random().nextInt(pow(2,31) as int),
           BackgroundService.callback,
           exact: true,
           wakeup:true
