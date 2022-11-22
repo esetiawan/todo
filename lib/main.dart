@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -23,6 +26,7 @@ import 'package:untitled/widgets/flagiconwidget.dart';
 import 'data/model/todo.dart';
 import 'data/preferences/preferences_helper.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:http/http.dart' as http;
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -49,9 +53,18 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final NotificationHelper _notificationHelper = NotificationHelper();
+  final CLOUD_FUNCTION_URL =
+      "https://us-central1-todo-5f8ca.cloudfunctions.net";
 
   Future<void> getFCMToken() async {
     final token = await FirebaseMessaging.instance.getToken();
+
+    final client = http.Client();
+    final response = await client.get(
+      Uri.parse("$CLOUD_FUNCTION_URL/saveFCMToken?fcm=$token"),
+    );
+    final output = json.decode(response.body);
+    print(output);
     print("FCM TOKEN = $token");
   }
 
